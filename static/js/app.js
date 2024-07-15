@@ -1,8 +1,7 @@
 // Build the metadata panel
 function buildMetadata(sample) {
   d3.json("https://static.bc-edx.com/data/dl-1-2/m14/lms/starter/samples.json").then(function(data) {
-    var metadata = data.metadata;
-
+   
     // get the metadata field
     var metadata = data.metadata;
 
@@ -41,22 +40,55 @@ function buildCharts(sample) {
     var sampleValues = result.sample_values;
 
     // Build a Bubble Chart
-
+    var trace = [{
+      x: otuIds,
+      y: sampleValues,
+      text: otuLabels,
+      mode: 'markers',
+      marker: {
+        size: sampleValues,
+        color: otuIds,
+        colorscale: 'Viridis',
+        opacity: 0.6
+      }
+    }];
+  
+    var data = [trace];
+  
+    // Define the layout for the Bubble Chart
+    var bubbleLayout = {
+      title: 'Bubble Chart for OTU Samples',
+      xaxis: { title: 'OTU ID' },
+      yaxis: { title: 'Sample Values' }
+    };
 
     // Render the Bubble Chart
-
+    Plotly.newPlot("bubble", bubbleData, bubbleLayout);
 
     // For the Bar Chart, map the otu_ids to a list of strings for your yticks
-
+    var yticks = otuIds.slice(0, 10).map(otuId => `OTU ${otuId}`).reverse();
 
     // Build a Bar Chart
     // Don't forget to slice and reverse the input data appropriately
-
+    var trace = {
+      x: topSampleValues,
+      y: topOtuIds.map(otuId => `OTU ${otuId}`),
+      text: topOtuLabels,
+      type: 'bar',
+      orientation: 'h'
+    };
+  
+    var data = [trace];
+  
+    // Define the layout for the Bar Chart
+    var layout = {
+      title: 'Top 10 OTUs',
+      xaxis: { title: 'Sample Values' },
+      yaxis: { title: 'OTU ID' }
+    };
 
     // Render the Bar Chart
-
-  });
-}
+    Plotly.newPlot('bar', data, layout); });}
 
 // Function to run on page load
 function init() {
